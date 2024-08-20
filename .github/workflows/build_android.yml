@@ -37,7 +37,7 @@ jobs:
           workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
       - run: |
           curl -sL https://firebase.tools | bash
-          firebase projects:list --token "$(gcloud auth print-access-token)"
+          firebase projects:list
       # - name: Setup Firebase Project
       #   env:
       #     FIREBASE_PROJ_DEV_NAME: g-map-flutter-432112
