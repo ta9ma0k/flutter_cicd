@@ -22,7 +22,7 @@ jobs:
       - name: Setup packages
         run: |
           flutter pub get
-          dart run build_runner build -d
+          # dart run build_runner build -d
       - name: run analyze
         run: flutter analyze
       - name: run test
