@@ -2,6 +2,39 @@ name: "build & deploy stg app"
 on:
   push:
 
+env:
+  DEPLOY_SERVICE_ACCOUNT: github-oidc-deploy@g-map-flutter-432112.iam.gserviceaccount.com
+  WORKLOAD_IDENTITY_PROVIDER: projects/679378251025/locations/global/workloadIdentityPools/g-map-flutter-432112-pool/providers/github-provider
+
 jobs:
   analyze_and_test:
     uses: ./.github/workflows/ci.yml
+
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "21"
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version-file: pubspec.yaml
+          cache: true
+      - name: Setup packages
+        run: |
+          flutter pub get
+      - id: 'auth'
+        name: 'Authenticate to GCP'
+        uses: google-github-actions/auth@v1
+        with:
+          service_account: ${{ env.DEPLOY_SERVICE_ACCOUNT }}
+          workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+      - uses: actions/setup-node@v3
+      - run: yarn global add firebase-tools
+      - run: firebase target
