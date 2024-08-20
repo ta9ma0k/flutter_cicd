@@ -1,0 +1,7 @@
+name: "build & deploy stg app"
+on:
+  push:
+
+jobs:
+  analyze_and_test:
+    uses: ./.github/workflows/ci.yaml
