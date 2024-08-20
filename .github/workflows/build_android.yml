@@ -35,11 +35,12 @@ jobs:
         with:
           service_account: ${{ env.DEPLOY_SERVICE_ACCOUNT }}
           workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
       - name: Setup Firebase Project
         env:
           FIREBASE_PROJ_DEV_NAME: g-map-flutter-432112
         run: |
           curl -sL https://firebase.tools | bash
-          firebase login:ci
+          echo "$(firebase login:ci --token ${{ secrets.GCP_CREDENTIALS }})" > token.txt
           dart pub global activate flutterfire_cli
-          flutterfire configure -p $FIREBASE_PROJ_DEV_NAME -y --platforms "ios, android" -i "com.exmple.example-app" -a "com.example.example_app" -f > null
+          flutterfire configure -p $FIREBASE_PROJ_DEV_NAME -y --platforms "ios, android" -i "com.exmple.example-app" -a "com.example.example_app" -t token.txt -f > null
