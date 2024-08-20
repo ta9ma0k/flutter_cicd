@@ -41,4 +41,4 @@ jobs:
         run: |
           curl -sL https://firebase.tools | bash
           dart pub global activate flutterfire_cli
-          flutterfire configure -p $FIREBASE_PROJ_DEV_NAME -y --platforms "ios, android" -i "com.exmple.example-app" -a "com.example.example_app" -t "$(gcloud auth print-access-token)" -f > null
+          flutterfire configure -p $FIREBASE_PROJ_DEV_NAME -y --platforms "ios, android" -i "com.example.flutterCicd" -a "com.example.flutter_cicd" -t "$(gcloud auth print-access-token)" -f > null
