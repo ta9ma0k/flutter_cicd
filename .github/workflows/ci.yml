@@ -1,6 +1,6 @@
 name: analyze & test
 on:
-  push:
+  workflow_call:
 
 jobs:
   analyze:
