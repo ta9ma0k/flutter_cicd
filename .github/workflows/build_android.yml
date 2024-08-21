@@ -1,14 +1,16 @@
 name: "build & deploy stg app"
 on:
   push:
+    branches: 
+      - main
 
 env:
   DEPLOY_SERVICE_ACCOUNT: github-oidc-deploy@g-map-flutter-432112.iam.gserviceaccount.com
   WORKLOAD_IDENTITY_PROVIDER: projects/679378251025/locations/global/workloadIdentityPools/g-map-flutter-432112-pool/providers/github-provider
 
 jobs:
-  # analyze_and_test:
-  #   uses: ./.github/workflows/ci.yml
+  analyze_and_test:
+    uses: ./.github/workflows/ci.yml
 
   build:
     runs-on: ubuntu-latest
