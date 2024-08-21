@@ -56,5 +56,5 @@ jobs:
         run: |
           firebase appdistribution:distribute \
           build/app/outputs/flutter-apk/app-release.apk \
-          --app 1:679378251025:android:efbc4a07644d252f93f0b0 \
+          --app '${{ secrets.ANDROID_APP_ID }}' \
           --groups developer
