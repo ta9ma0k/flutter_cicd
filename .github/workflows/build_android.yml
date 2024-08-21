@@ -5,7 +5,6 @@ on:
 env:
   DEPLOY_SERVICE_ACCOUNT: github-oidc-deploy@g-map-flutter-432112.iam.gserviceaccount.com
   WORKLOAD_IDENTITY_PROVIDER: projects/679378251025/locations/global/workloadIdentityPools/g-map-flutter-432112-pool/providers/github-provider
-  FIREBASE_APP_ID: g-map-flutter-432112
 
 jobs:
   # analyze_and_test:
@@ -27,6 +26,13 @@ jobs:
           channel: stable
           flutter-version-file: pubspec.yaml
           cache: true
+      - name: Cache Flutter build
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.pub-cache
+            build/
+        key: ${{ runner.os }}-flutter-${{ hashFiles('pubspec.yaml') }}
       - name: Setup packages
         run: |
           flutter pub get
@@ -47,4 +53,4 @@ jobs:
       - name: Setup Firebase Project
         run: curl -sL https://firebase.tools | bash
       - name: deploy firebase app distribution
-        run: firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk --app g-map-flutter-432112 --groups developer
+        run: firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk --app "{{ secrets.FIREBASE_APP_ID }}" --groups developer
