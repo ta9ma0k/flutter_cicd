@@ -47,4 +47,4 @@ jobs:
       - name: Setup Firebase Project
         run: curl -sL https://firebase.tools | bash
       - name: deploy firebase app distribution
-        run: firebase build/app/outputs/bundle/release/app-release.aab --app $FIREBASE_APP_ID --groups developer
+        run: firebase appdistribution:distribute build/app/outputs/bundle/release/app-release.aab --app $FIREBASE_APP_ID --groups developer
