@@ -5,6 +5,7 @@ on:
 env:
   DEPLOY_SERVICE_ACCOUNT: github-oidc-deploy@g-map-flutter-432112.iam.gserviceaccount.com
   WORKLOAD_IDENTITY_PROVIDER: projects/679378251025/locations/global/workloadIdentityPools/g-map-flutter-432112-pool/providers/github-provider
+  FIREBASE_APP_ID: g-map-flutter-432112
 
 jobs:
   # analyze_and_test:
@@ -38,13 +39,13 @@ jobs:
           echo 'keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}' >> android/key.properties
       - name: build
         run: flutter build appbundle --build-number=$GITHUB_RUN_NUMBER
-    # deploy:
-    #   - id: 'auth'
-    #     name: 'Authenticate to GCP'
-    #     uses: google-github-actions/auth@v1
-    #     with:
-    #       service_account: ${{ env.DEPLOY_SERVICE_ACCOUNT }}
-    #       workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
-    #   - name: Setup Firebase Project
-    #     run: |
-    #       curl -sL https://firebase.tools | bash
+    deploy:
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v1
+        with:
+          service_account: ${{ env.DEPLOY_SERVICE_ACCOUNT }}
+          workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+      - name: Setup Firebase Project
+        run: curl -sL https://firebase.tools | bash
+      - name: deploy firebase app distribution
+        run: firebase build/app/outputs/bundle/release/app-release.aab --app $FIREBASE_APP_ID --groups developer
