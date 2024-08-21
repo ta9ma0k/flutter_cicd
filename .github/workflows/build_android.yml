@@ -53,4 +53,8 @@ jobs:
       - name: Setup Firebase Project
         run: curl -sL https://firebase.tools | bash
       - name: deploy firebase app distribution
-        run: firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk --app "{{ secrets.ANDROID_APP_ID }}" --groups developer
+        run: |
+          firebase appdistribution:distribute \
+          build/app/outputs/flutter-apk/app-release.apk \
+          --app 1:679378251025:android:efbc4a07644d252f93f0b0 \
+          --groups developer
