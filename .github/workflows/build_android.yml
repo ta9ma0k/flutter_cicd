@@ -29,16 +29,22 @@ jobs:
       - name: Setup packages
         run: |
           flutter pub get
-      - id: 'auth'
-        name: 'Authenticate to GCP'
-        uses: google-github-actions/auth@v1
-        with:
-          service_account: ${{ env.DEPLOY_SERVICE_ACCOUNT }}
-          workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
-      - name: Setup Firebase Project
-        env:
-          FIREBASE_PROJ_DEV_NAME: g-map-flutter-432112
+      - name: Create key.properties
         run: |
-          curl -sL https://firebase.tools | bash
-          dart pub global activate flutterfire_cli
-          flutterfire configure -p $FIREBASE_PROJ_DEV_NAME -y --platforms "ios, android" -i "com.example.flutterCicd" -a "com.example.flutter_cicd" -t "$(gcloud auth print-access-token)" -f > null
+          echo ${{ secrets.ANDROID_KEY_JKS }} | base64 -d > android/app/release.jks
+          echo 'storeFile=release.jks' > android/key.properties
+          echo 'storePassword=${{ secrets.ANDROID_STORE_PASSWORD }}' >> android/key.properties
+          echo 'keyPassword=${{ secrets.ANDROID_ALIAS_PASSWORD }}' >> android/key.properties
+          echo 'keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}' >> android/key.properties
+      - name: build
+        run: flutter build appbundle --build-number=$GITHUB_RUN_NUMBER
+    # deploy:
+    #   - id: 'auth'
+    #     name: 'Authenticate to GCP'
+    #     uses: google-github-actions/auth@v1
+    #     with:
+    #       service_account: ${{ env.DEPLOY_SERVICE_ACCOUNT }}
+    #       workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+    #   - name: Setup Firebase Project
+    #     run: |
+    #       curl -sL https://firebase.tools | bash
