@@ -38,7 +38,7 @@ jobs:
           echo 'keyPassword=${{ secrets.ANDROID_ALIAS_PASSWORD }}' >> android/key.properties
           echo 'keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}' >> android/key.properties
       - name: build
-        run: flutter build appbundle --build-number=$GITHUB_RUN_NUMBER
+        run: flutter build appbundle --build-number=$GITHUB_RUN_NUMBER --release
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v1
         with:
