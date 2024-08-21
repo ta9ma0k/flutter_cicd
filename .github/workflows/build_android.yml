@@ -32,7 +32,7 @@ jobs:
           path: |
             ~/.pub-cache
             build/
-        key: ${{ runner.os }}-flutter-${{ hashFiles('pubspec.yaml') }}
+          key: ${{ runner.os }}-flutter-${{ hashFiles('pubspec.yaml') }}
       - name: Setup packages
         run: |
           flutter pub get
