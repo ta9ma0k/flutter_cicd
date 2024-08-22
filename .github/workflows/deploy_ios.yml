@@ -80,6 +80,9 @@ jobs:
     name: Release ipa to Firebase
     needs: [build]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v2
       - name: Get release-ipa from artifacts
