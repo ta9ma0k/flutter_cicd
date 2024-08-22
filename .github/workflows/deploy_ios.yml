@@ -75,3 +75,28 @@ jobs:
         run: |
           security delete-keychain $RUNNER_TEMP/app-signing.keychain-db
           rm ~/Library/MobileDevice/Provisioning\ Profiles/build_pp.mobileprovision
+
+  release:
+    name: Release ipa to Firebase
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get release-ipa from artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: release-ipa
+          path: ./build
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v1
+        with:
+          service_account: ${{ env.DEPLOY_SERVICE_ACCOUNT }}
+          workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+      - name: Setup Firebase Project
+        run: curl -sL https://firebase.tools | bash
+      - name: deploy firebase app distribution
+        run: |
+          firebase appdistribution:distribute \
+          ./build/flutter_cicd.ipa \
+          --app '${{ secrets.IOS_APP_ID }}' \
+          --groups developer
