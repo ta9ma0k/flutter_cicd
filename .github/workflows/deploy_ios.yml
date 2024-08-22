@@ -3,16 +3,15 @@ name: "[IOS] build & deploy stg app"
 on:
   push:
 
-env:
-  DEPLOY_SERVICE_ACCOUNT: github-oidc-deploy@g-map-flutter-432112.iam.gserviceaccount.com
-  WORKLOAD_IDENTITY_PROVIDER: projects/679378251025/locations/global/workloadIdentityPools/g-map-flutter-432112-pool/providers/github-provider
-
 jobs:
-  # analyze_and_test:
-  #   uses: ./.github/workflows/ci.yml
-  build:
-    runs-on: macos-latest
+  analyze_and_test:
+    name: Check test and analyze
+    uses: ./.github/workflows/ci.yml
 
+  build:
+    name: Build IOS
+    runs-on: macos-latest
+    needs: [analyze_and_test]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -93,13 +92,15 @@ jobs:
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v1
         with:
-          service_account: ${{ env.DEPLOY_SERVICE_ACCOUNT }}
-          workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: github-oidc-deploy@g-map-flutter-432112.iam.gserviceaccount.com
+          workload_identity_provider: projects/679378251025/locations/global/workloadIdentityPools/g-map-flutter-432112-pool/providers/github-provider
       - name: Setup Firebase Project
         run: curl -sL https://firebase.tools | bash
       - name: deploy firebase app distribution
+        env:
+          IOS_APP_ID: ${{ secrets.IOS_APP_ID }}
         run: |
           firebase appdistribution:distribute \
           ./build/flutter_cicd.ipa \
-          --app '${{ secrets.IOS_APP_ID }}' \
+          --app $IOS_APP_ID \
           --groups developer
