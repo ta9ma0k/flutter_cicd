@@ -2,6 +2,8 @@ name: "[IOS] build & deploy stg app"
 
 on:
   push:
+    branches:
+      - stg
 
 jobs:
   analyze_and_test:

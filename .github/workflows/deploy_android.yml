@@ -2,7 +2,7 @@ name: "build & deploy stg app"
 on:
   push:
     branches: 
-      - main
+      - stg
 
 env:
   DEPLOY_SERVICE_ACCOUNT: github-oidc-deploy@g-map-flutter-432112.iam.gserviceaccount.com
