@@ -65,3 +65,13 @@ jobs:
         run: |
           echo $EXPORT_OPTIONS > ios/Runner/ExportOptions.plist
           flutter build ipa --release --export-options-plist=ios/Runner/ExportOptions.plist --build-number=$GITHUB_RUN_NUMBER
+      - name: collect ipa artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: release-ipa
+          path: build/ios/ipa/*.ipa
+      - name: Clean up keychain and provisioning profile
+        if: ${{ always() }}
+        run: |
+          security delete-keychain $RUNNER_TEMP/app-signing.keychain-db
+          rm ~/Library/MobileDevice/Provisioning\ Profiles/build_pp.mobileprovision
