@@ -1,0 +1,44 @@
+name: Deploy App Distribution
+on:
+  workflow_call:
+    inputs:
+      artifact:
+        type: string
+        required: true
+        description: アーティファクトキー
+      filename:
+        type: string
+        required: true
+        description: アップロードするファイル名
+      app_id:
+        type: string
+        required: true
+        description: 登録したAppId
+      groups:
+        type: string
+        default: developer
+        description: 配信するテスターグループ
+
+jobs:
+  deploy_app_disribution:
+    name: Deploy App Distribution
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifact }}
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v1
+        with:
+          service_account: github-oidc-deploy@g-map-flutter-432112.iam.gserviceaccount.com
+          workload_identity_provider: projects/679378251025/locations/global/workloadIdentityPools/g-map-flutter-432112-pool/providers/github-provider
+      - name: Setup Firebase Project
+        run: curl -sL https://firebase.tools | bash
+      - name: deploy firebase app distribution
+        env:
+          FILE_NAME: ${{ inputs.filename }}
+          APP_ID: ${{ inputs.app_id }}
+          GROPUS: ${{ inputs.groups }}
+        run: firebase appdistribution:distribute $FILE_NAME --app $APP_ID --groups $GROPUS

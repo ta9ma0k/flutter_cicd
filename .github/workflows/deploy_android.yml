@@ -1,18 +1,17 @@
-name: "build & deploy stg app"
+name: "[ANDROID] build & deploy stg app"
 on:
   push:
     branches: 
       - stg
 
-env:
-  DEPLOY_SERVICE_ACCOUNT: github-oidc-deploy@g-map-flutter-432112.iam.gserviceaccount.com
-  WORKLOAD_IDENTITY_PROVIDER: projects/679378251025/locations/global/workloadIdentityPools/g-map-flutter-432112-pool/providers/github-provider
-
 jobs:
   analyze_and_test:
+    name: Check test and analyze
     uses: ./.github/workflows/ci.yml
 
   build:
+    name: Build Android
+    needs: [analyze_and_test]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -50,13 +49,15 @@ jobs:
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v1
         with:
-          service_account: ${{ env.DEPLOY_SERVICE_ACCOUNT }}
-          workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: github-oidc-deploy@g-map-flutter-432112.iam.gserviceaccount.com
+          workload_identity_provider: projects/679378251025/locations/global/workloadIdentityPools/g-map-flutter-432112-pool/providers/github-provider
       - name: Setup Firebase Project
         run: curl -sL https://firebase.tools | bash
       - name: deploy firebase app distribution
+        env:
+          ANDROID_APP_ID: ${{ secrets.ANDROID_APP_ID }}
         run: |
           firebase appdistribution:distribute \
           build/app/outputs/flutter-apk/app-release.apk \
-          --app '${{ secrets.ANDROID_APP_ID }}' \
+          --app $ANDROID_APP_ID \
           --groups developer
