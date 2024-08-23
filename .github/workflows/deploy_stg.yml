@@ -4,8 +4,7 @@ on:
     branches: 
 
 jobs:
-  analyze_and_test:
-    id: ci
+  ci:
     name: Test and Analyze
     uses: ./.github/workflows/ci.yml
 
