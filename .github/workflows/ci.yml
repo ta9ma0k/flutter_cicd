@@ -17,11 +17,21 @@ jobs:
           channel: stable
           flutter-version-file: pubspec.yaml
           cache: true
-      - run: flutter --version
+      - name: Cache Flutter build
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ env.FLUTTER_HOME }}/.pub-cache
+            **/.packages
+            **/.flutter-plugins
+            **/.flutter-plugin-dependencies
+            **/.dart_tool/package_config.json
+          key: ${{ runner.os }}-flutter-${{ hashFiles('pubspec.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-flutter-
       - name: Setup packages
         run: |
           flutter pub get
-          # dart run build_runner build -d
       - name: run analyze
         run: flutter analyze
       - name: run test

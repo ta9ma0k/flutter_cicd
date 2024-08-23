@@ -35,9 +35,14 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            ~/.pub-cache
-            build/
+            ${{ env.FLUTTER_HOME }}/.pub-cache
+            **/.packages
+            **/.flutter-plugins
+            **/.flutter-plugin-dependencies
+            **/.dart_tool/package_config.json
           key: ${{ runner.os }}-flutter-${{ hashFiles('pubspec.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-flutter-
       - name: Setup packages
         run: |
           flutter pub get
@@ -114,9 +119,14 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            ~/.pub-cache
-            build/
+            ${{ env.FLUTTER_HOME }}/.pub-cache
+            **/.packages
+            **/.flutter-plugins
+            **/.flutter-plugin-dependencies
+            **/.dart_tool/package_config.json
           key: ${{ runner.os }}-flutter-${{ hashFiles('pubspec.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-flutter-
       - name: Setup packages
         run: |
           flutter pub get
