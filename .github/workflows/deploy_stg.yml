@@ -79,7 +79,7 @@ jobs:
     name: Build IOS
     runs-on: macos-latest
     needs: [ci]
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
