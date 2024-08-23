@@ -77,7 +77,7 @@ jobs:
 
   release:
     name: Release ipa to Firebase
-    uses: ./.github/workflows/deploy_app_disribution.yml
+    uses: ./.github/workflows/deploy_app_distribution.yml
     needs: [build]
     with:
       artifact: release-ipa
