@@ -82,4 +82,5 @@ jobs:
     with:
       artifact: release-ipa
       filename: flutter_cicd.ipa 
+    secrets:
       app_id: ${{ secrets.IOS_APP_ID }}

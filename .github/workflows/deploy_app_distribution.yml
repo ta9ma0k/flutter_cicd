@@ -10,14 +10,15 @@ on:
         type: string
         required: true
         description: アップロードするファイル名
-      app_id:
-        type: string
-        required: true
-        description: 登録したAppId
       groups:
         type: string
         default: developer
         description: 配信するテスターグループ
+    secrets:
+      app_id:
+        type: string
+        required: true
+        description: 登録したAppId
 
 jobs:
   deploy_app_disribution:
@@ -39,6 +40,6 @@ jobs:
       - name: deploy firebase app distribution
         env:
           FILE_NAME: ${{ inputs.filename }}
-          APP_ID: ${{ inputs.app_id }}
+          APP_ID: ${{ secrets.app_id }}
           GROPUS: ${{ inputs.groups }}
         run: firebase appdistribution:distribute $FILE_NAME --app $APP_ID --groups $GROPUS
