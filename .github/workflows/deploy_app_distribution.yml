@@ -16,7 +16,6 @@ on:
         description: 配信するテスターグループ
     secrets:
       app_id:
-        type: string
         required: true
         description: 登録したAppId
 
