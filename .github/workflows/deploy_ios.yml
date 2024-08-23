@@ -79,6 +79,9 @@ jobs:
     name: Release ipa to Firebase
     uses: ./.github/workflows/deploy_app_distribution.yml
     needs: [build]
+    permissions:
+      contents: read
+      id-token: write
     with:
       artifact: release-ipa
       filename: flutter_cicd.ipa 
