@@ -3,6 +3,10 @@ on:
   push:
     branches: 
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   ci:
     name: Test and Analyze
@@ -12,6 +16,7 @@ jobs:
     name: Build Android
     needs: [ci]
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     permissions:
       contents: read
       id-token: write
@@ -68,6 +73,7 @@ jobs:
     name: Build IOS
     runs-on: macos-latest
     needs: [ci]
+    timeout-minutes: 5
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
